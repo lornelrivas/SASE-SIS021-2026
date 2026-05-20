@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula Virtual UAC – Ingeniería de Software</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --uac-blue: #1a3a6b;
+    --uac-blue-mid: #1e4d9b;
+    --uac-blue-light: #2563c7;
+    --uac-accent: #e8a020;
+    --uac-accent-light: #f5c960;
+    --bg: #f0f2f5;
+    --sidebar-bg: #1a3a6b;
+    --sidebar-text: #c8d8f0;
+    --sidebar-active: #ffffff;
+    --sidebar-hover: rgba(255,255,255,0.08);
+    --card-bg: #ffffff;
+    --text-main: #1a1a2e;
+    --text-muted: #5a6a80;
+    --border: #dce3ed;
+    --success: #2e7d32;
+    --pending: #b45309;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(26,58,107,0.10);
+    --shadow-md: 0 4px 16px rgba(26,58,107,0.13);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  /* ─── TOP BAR ─── */
+  .topbar {
+    background: var(--uac-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .topbar-logo { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo svg { width: 36px; height: 36px; fill: white; flex-shrink: 0; }
+  .topbar-logo-text { line-height: 1.15; }
+  .topbar-logo-text .name { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+  .topbar-logo-text .sub { font-size: 10px; color: var(--uac-accent-light); letter-spacing: 0.06em; text-transform: uppercase; }
+  .topbar-divider { width: 1px; height: 30px; background: rgba(255,255,255,0.2); }
+  .topbar-course { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 400; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-user { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.9); }
+  .topbar-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--uac-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: var(--uac-blue);
+  }
+
+  /* ─── LAYOUT ─── */
+  .layout { display: flex; flex: 1; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    min-height: calc(100vh - 56px);
+    padding: 20px 0;
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+  .sidebar-section { margin-bottom: 6px; }
+  .sidebar-label {
+    font-size: 10px; font-weight: 700; color: var(--uac-accent);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 8px 20px 4px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 20px; cursor: pointer;
+    color: var(--sidebar-text); font-size: 13px;
+    transition: background 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+  .sidebar-item:hover { background: var(--sidebar-hover); color: white; }
+  .sidebar-item.active {
+    background: rgba(255,255,255,0.12);
+    color: white; border-left-color: var(--uac-accent);
+    font-weight: 600;
+  }
+  .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
+  .sidebar-item.active svg { opacity: 1; }
+  .sidebar-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 8px 16px; }
+
+  /* ─── MAIN ─── */
+  .main { flex: 1; padding: 28px 32px; max-width: 960px; }
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; display: flex; align-items: center; gap: 6px; }
+  .breadcrumb a { color: var(--uac-blue-light); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 22px; font-weight: 600;
+    color: var(--uac-blue);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title svg { width: 22px; height: 22px; color: var(--uac-accent); fill: var(--uac-accent); }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .card-header {
+    background: linear-gradient(135deg, var(--uac-blue) 0%, var(--uac-blue-mid) 100%);
+    color: white; padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; user-select: none;
+  }
+  .card-header svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .card-header-title { font-size: 14px; font-weight: 600; flex: 1; }
+  .card-header-arrow { transition: transform 0.25s; }
+  .card-header.open .card-header-arrow { transform: rotate(180deg); }
+  .card-body { padding: 18px 20px; display: none; }
+  .card-body.open { display: block; }
+
+  /* ─── UNIT BLOCK ─── */
+  .unit-block { margin-bottom: 24px; }
+  .unit-header {
+    background: linear-gradient(135deg, var(--uac-blue) 0%, #1e5fa8 100%);
+    color: white; padding: 16px 22px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .unit-number {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--uac-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: var(--uac-blue);
+    flex-shrink: 0;
+  }
+  .unit-title-text { flex: 1; }
+  .unit-title-text .unit-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.7); }
+  .unit-title-text .unit-name { font-size: 15px; font-weight: 600; }
+  .unit-arrow { transition: transform 0.25s; }
+  .unit-header.open .unit-arrow { transform: rotate(180deg); }
+
+  .unit-body {
+    background: white; border: 1px solid var(--border);
+    border-top: none; border-radius: 0 0 var(--radius) var(--radius);
+    display: none;
+  }
+  .unit-body.open { display: block; }
+
+  .unit-intro {
+    padding: 16px 22px;
+    background: #f7f9fc;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px; color: var(--text-muted); line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* ─── RESOURCE ITEMS ─── */
+  .resource-group { padding: 14px 22px; border-bottom: 1px solid var(--border); }
+  .resource-group:last-child { border-bottom: none; }
+  .resource-group-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--uac-accent); margin-bottom: 10px;
+  }
+  .resource-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px; border-radius: 6px;
+    cursor: pointer; transition: background 0.15s;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+  }
+  .resource-item:hover { background: #f0f5ff; border-color: #d0dff5; }
+  .resource-icon {
+    width: 34px; height: 34px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .resource-icon.pdf { background: #fee2e2; }
+  .resource-icon.ppt { background: #fef3c7; }
+  .resource-icon.forum { background: #d1fae5; }
+  .resource-icon.task { background: #ede9fe; }
+  .resource-icon.video { background: #dbeafe; }
+  .resource-icon.link { background: #f0fdf4; }
+  .resource-icon.chat { background: #fce7f3; }
+  .resource-icon svg { width: 18px; height: 18px; }
+  .resource-text { flex: 1; }
+  .resource-name { font-size: 14px; font-weight: 500; color: var(--uac-blue); }
+  .resource-meta { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .resource-badge {
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 20px; letter-spacing: 0.05em;
+  }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-available { background: #d1fae5; color: #065f46; }
+  .badge-soon { background: #e5e7eb; color: #6b7280; }
+
+  /* ─── PROFESSOR CARD ─── */
+  .prof-card {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 20px;
+  }
+  .prof-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--uac-blue), var(--uac-blue-light));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 700; color: white; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(26,58,107,0.3);
+  }
+  .prof-info { flex: 1; }
+  .prof-name { font-size: 17px; font-weight: 700; color: var(--uac-blue); margin-bottom: 2px; }
+  .prof-role { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .prof-email { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--uac-blue-light); }
+  .prof-bio { font-size: 14px; color: var(--text-main); line-height: 1.65; margin-top: 10px; }
+
+  /* ─── PENDING UNIT PLACEHOLDER ─── */
+  .placeholder-body {
+    padding: 20px 22px;
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    display: none;
+  }
+  .placeholder-body.open { display: block; }
+  .placeholder-msg {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px; background: #f0f5ff;
+    border-radius: 6px; border: 1px dashed #93b4e8;
+    font-size: 13px; color: var(--text-muted);
+  }
+  .placeholder-msg svg { width: 18px; height: 18px; color: #93b4e8; flex-shrink: 0; }
+
+  /* ─── SYLLABUS NOTICE ─── */
+  .notice {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 18px; border-radius: 8px;
+    background: #fffbeb; border: 1px solid #fcd34d;
+    margin-bottom: 16px; font-size: 13px; color: #92400e;
+  }
+  .notice svg { width: 18px; height: 18px; flex-shrink: 0; color: #d97706; margin-top: 1px; }
+
+  /* ─── FORUM ITEM ─── */
+  .forum-item {
+    padding: 12px 16px; background: #f8fafb;
+    border-radius: 6px; border: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .forum-title { font-size: 14px; font-weight: 600; color: var(--uac-blue); margin-bottom: 3px; }
+  .forum-meta { font-size: 12px; color: var(--text-muted); }
+
+  /* ─── ACTIVITY DETAIL ─── */
+  .activity-detail {
+    background: #f8fafb; border-radius: 6px;
+    border: 1px solid var(--border);
+    padding: 14px 16px; margin-top: 6px;
+    font-size: 13px; color: var(--text-main); line-height: 1.6;
+  }
+  .activity-label { font-weight: 700; color: var(--uac-blue); margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  svg { display: inline-block; vertical-align: middle; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(26,58,107,0.25); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <img src="data:image/png;base64,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iAeC+Ky3uHI8avdsoq+P8XVRMqIWv82u23H7KsRQ6b4DQ1IqKTELLFK07hwpGbj3dFgWj+hjtOM3ffqPJn1tLJTvgdTSUvK4g7EHmDtuhHkpoVXn5Cnc5VS7P6llhUOFKjbHujjFGyKNscbGsY0bBrRsAFyRFXk8IiIAiIgCIiAIiIAiIgCIiAIiIAiIgCEAjYgEeqIgPnHTwRu5o4Y2Hza0Ar6IiAIiID5Pp6d7uZ8ETj5lgJX0aA0bNAA8gv1EAREQBERAEREBxkjjkG0jGvHk4brjHBBGd44Y2H9VoC+iIAiIgBAI2I3C+ccEEbuaOGNjj4taAV9EQBERAfjmteOVzQ4eRG64R08EZ3jhjYfNrQF9EQBERAcJYopRtJGx4/WaCv2OOOMbRxsYPJo2XJEAREQHGSKOQbSRsePJw3X5FFFENo42MH6rQFzRAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAf//Z" alt="Logo UAC" style="height:40px;width:auto;object-fit:contain;flex-shrink:0;">
+      <div class="topbar-logo-text">
+        <div class="name">Universidad Andina del Cusco</div>
+        <div class="sub">Aula Virtual UAC</div>
+      </div>
+    </div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-course">SIS021 – Ingeniería de Software · 2026-II · Grupo A</div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-user">
+      <div class="topbar-avatar">LR</div>
+      Dr. Ing. Lornel Rivas Mago
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navegación</div>
+      <a class="sidebar-item active" onclick="showSection('generalidades')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Inicio del Curso
+      </a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Unidades</div>
+      <a class="sidebar-item" onclick="showSection('unidad1')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>U.I · Introducción a IS</span>
+      </a>
+      <a class="sidebar-item" onclick="showSection('unidad2')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>U.II · Análisis y Diseño</span>
+      </a>
+      <a class="sidebar-item" onclick="showSection('unidad3')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>U.III · Gestión y Calidad</span>
+      </a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Herramientas</div>
+      <a class="sidebar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Foro de Avisos
+      </a>
+      <a class="sidebar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.22 2 2 0 012.22 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91"/></svg>
+        Chat de Consultas
+      </a>
+      <a class="sidebar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calificaciones
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- ══════════════════════════════ GENERALIDADES ══════════════════════════════ -->
+    <div id="section-generalidades">
+      <div class="breadcrumb">
+        <a href="#">Inicio</a> › Ingeniería de Software › Generalidades
+      </div>
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="var(--uac-accent)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
+        Generalidades del Curso
+      </div>
+
+      <!-- Presentación del Docente -->
+      <div class="card">
+        <div class="card-header open" onclick="toggleCard(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="card-header-title">Presentación del Docente</span>
+          <svg class="card-header-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body open">
+          <div class="prof-card">
+            <img src="data:image/jpeg;base64,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" alt="Dr. Ing. Lornel Rivas Mago" style="width:72px;height:72px;border-radius:50%;object-fit:cover;box-shadow:0 4px 12px rgba(26,58,107,0.3);flex-shrink:0;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="prof-avatar" style="display:none;">LR</div>
+            <div class="prof-info">
+              <div class="prof-name">Dr. Ing. Lornel Antonio Rivas Mago</div>
+              <div class="prof-role">Docente – Escuela Profesional de Ingeniería de Sistemas · UAC</div>
+              <div class="prof-email">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                lrivas@uandina.edu.pe
+              </div>
+              <div class="prof-bio">Hola, soy el Dr. Ing. Lornel Antonio Rivas Mago, docente de la Escuela Profesional de Ingeniería de Sistemas de la Universidad Andina del Cusco. Es un gusto compartir este espacio académico contigo. A lo largo de este semestre trabajaremos juntos para desarrollar competencias sólidas en ingeniería de software, aplicando metodologías, estándares y herramientas que te prepararán para los desafíos reales del ejercicio profesional. Cualquier consulta o comunicación puedes escribirme a lrivas@uandina.edu.pe — estoy aquí para acompañarte en este proceso. ¡Bienvenido!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Presentación de la Asignatura -->
+      <div class="card">
+        <div class="card-header open" onclick="toggleCard(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          <span class="card-header-title">Presentación de la Asignatura</span>
+          <svg class="card-header-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body open">
+          <p style="font-size:14px;line-height:1.7;color:var(--text-main);">
+            Ingeniería de Software es una asignatura teórico-práctica que te brindará las bases conceptuales y técnicas para desarrollar software de calidad en entornos profesionales. Abordaremos los procesos, modelos y metodologías del desarrollo de software —incluyendo enfoques ágiles—, la gestión y planificación de proyectos, la ingeniería de requisitos, el modelado y diseño arquitectónico, el control de versiones, las pruebas, el mantenimiento y la gestión de configuraciones. Todo ello orientado a que puedas aplicar estándares reales en el análisis, diseño y validación de sistemas de información. <strong>¡Este es el momento de conectar la teoría con la práctica profesional!</strong>
+          </p>
+          <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;">
+            <div style="background:#f0f5ff;border-radius:6px;padding:10px 16px;font-size:12px;">
+              <div style="font-weight:700;color:var(--uac-blue);margin-bottom:2px;">Código</div>
+              <div>SIS021</div>
+            </div>
+            <div style="background:#f0f5ff;border-radius:6px;padding:10px 16px;font-size:12px;">
+              <div style="font-weight:700;color:var(--uac-blue);margin-bottom:2px;">Créditos</div>
+              <div>03 créditos</div>
+            </div>
+            <div style="background:#f0f5ff;border-radius:6px;padding:10px 16px;font-size:12px;">
+              <div style="font-weight:700;color:var(--uac-blue);margin-bottom:2px;">Ciclo</div>
+              <div>IX · 2026-II</div>
+            </div>
+            <div style="background:#f0f5ff;border-radius:6px;padding:10px 16px;font-size:12px;">
+              <div style="font-weight:700;color:var(--uac-blue);margin-bottom:2px;">Horario</div>
+              <div>Mar. y Jue. 14:00–16:00</div>
+            </div>
+            <div style="background:#f0f5ff;border-radius:6px;padding:10px 16px;font-size:12px;">
+              <div style="font-weight:700;color:var(--uac-blue);margin-bottom:2px;">Modalidad</div>
+              <div>Presencial</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sílabo -->
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span class="card-header-title">Sílabo de la Asignatura</span>
+          <svg class="card-header-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/11ubUZYZJeb0J9z3H7IcqWC0HpfF9bZlR/view?usp=sharing','_blank')" style="cursor:pointer;">
+            <div class="resource-icon pdf">
+              <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6" fill="none" stroke="#ef4444" stroke-width="1"/></svg>
+            </div>
+            <div class="resource-text">
+              <div class="resource-name">Sílabo – Ingeniería de Software SIS021 2026-II</div>
+              <div class="resource-meta">PDF · Semestre 2026-II</div>
+            </div>
+            <span class="resource-badge badge-available">Disponible</span>
+          </div>
+          <div class="resource-item" style="margin-top:8px;">
+            <div class="resource-icon task">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <div class="resource-text">
+              <div class="resource-name">Acta de Recepción del Sílabo</div>
+              <div class="resource-meta">Tarea · Entrega obligatoria</div>
+            </div>
+            <span class="resource-badge badge-pending">Pendiente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Foro de Avisos -->
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="card-header-title">Foro de Avisos</span>
+          <svg class="card-header-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="forum-item">
+            <div class="forum-title">📌 Bienvenida al semestre 2026-II</div>
+            <div class="forum-meta">Dr. Ing. Lornel Rivas Mago · 03 de agosto de 2026</div>
+            <div style="font-size:13px;color:var(--text-main);margin-top:6px;line-height:1.6;">Bienvenidos al semestre 2026-II. En este espacio publicaré avisos, recordatorios y novedades importantes del curso. Les recomiendo revisarlo con frecuencia. ¡Éxitos en este semestre!</div>
+          </div>
+          <div class="forum-item">
+            <div class="forum-title">📋 Indicaciones para el primer aporte – Unidad I</div>
+            <div class="forum-meta">Dr. Ing. Lornel Rivas Mago · 10 de agosto de 2026</div>
+            <div style="font-size:13px;color:var(--text-main);margin-top:6px;line-height:1.6;">Para la Actividad 1.1, descarguen el instructivo disponible en la sección de la Unidad I. Recuerden que el trabajo es grupal y la entrega es a través del aula virtual en la fecha indicada. Ante cualquier duda, utilicen el Chat de Consultas.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hoja de Ruta -->
+      <div class="card">
+        <div class="card-header open" onclick="toggleCard(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+          <span class="card-header-title">Hoja de Ruta de la Asignatura</span>
+          <svg class="card-header-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body open" style="padding:16px 12px;">
+          <svg width="100%" viewBox="0 0 680 420" role="img">
+            <defs>
+              <marker id="arrow-hr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+            </defs>
+
+            <!-- Título -->
+            <text font-family="'Source Sans 3',sans-serif" font-size="13" font-weight="600" x="340" y="28" text-anchor="middle" fill="#1a3a6b">Hoja de ruta · SIS021 Ingeniería de Software 2026-II</text>
+
+            <!-- Línea central -->
+            <line x1="80" y1="130" x2="600" y2="130" stroke="#ccc" stroke-width="2" stroke-dasharray="6 4"/>
+
+            <!-- ── UNIDAD I ── -->
+            <circle cx="140" cy="130" r="26" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="12" font-weight="600" x="140" y="130" text-anchor="middle" dominant-baseline="central" fill="#0C447C">U.I</text>
+            <rect x="58" y="170" width="164" height="36" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="11" font-weight="600" x="140" y="184" text-anchor="middle" dominant-baseline="central" fill="#0C447C">Introducción a IS</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="140" y="199" text-anchor="middle" fill="#185FA5">Fundamentos y procesos</text>
+            <line x1="140" y1="156" x2="140" y2="170" stroke="#185FA5" stroke-width="0.8"/>
+            <rect x="48" y="222" width="184" height="96" rx="8" fill="#f8fafb" stroke="#dce3ed" stroke-width="0.5"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="66" y="242" fill="#5a6a80">· 1.1 Introducción a la ingeniería</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="74" y="256" fill="#5a6a80">del software</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="66" y="272" fill="#5a6a80">· 1.2 Procesos de software</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="66" y="288" fill="#5a6a80">· 1.3 Desarrollo ágil de software</text>
+            <line x1="140" y1="206" x2="140" y2="222" stroke="#dce3ed" stroke-width="0.5" stroke-dasharray="3 3"/>
+
+            <!-- ── UNIDAD II ── -->
+            <circle cx="340" cy="130" r="26" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="12" font-weight="600" x="340" y="130" text-anchor="middle" dominant-baseline="central" fill="#085041">U.II</text>
+            <rect x="258" y="170" width="164" height="36" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="11" font-weight="600" x="340" y="184" text-anchor="middle" dominant-baseline="central" fill="#085041">Análisis y Diseño</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="340" y="199" text-anchor="middle" fill="#0F6E56">Requisitos y arquitectura</text>
+            <line x1="340" y1="156" x2="340" y2="170" stroke="#0F6E56" stroke-width="0.8"/>
+            <rect x="248" y="222" width="184" height="96" rx="8" fill="#f8fafb" stroke="#dce3ed" stroke-width="0.5"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="266" y="242" fill="#5a6a80">· 2.1 Ingeniería de requisitos</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="266" y="260" fill="#5a6a80">· 2.2 Modelado de sistemas</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="266" y="278" fill="#5a6a80">· 2.3 Diseño arquitectónico</text>
+            <line x1="340" y1="206" x2="340" y2="222" stroke="#dce3ed" stroke-width="0.5" stroke-dasharray="3 3"/>
+
+            <!-- ── UNIDAD III ── -->
+            <circle cx="540" cy="130" r="26" fill="#FAEEDA" stroke="#854F0B" stroke-width="1.5"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="12" font-weight="600" x="540" y="130" text-anchor="middle" dominant-baseline="central" fill="#633806">U.III</text>
+            <rect x="458" y="170" width="164" height="36" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.8"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="11" font-weight="600" x="540" y="184" text-anchor="middle" dominant-baseline="central" fill="#633806">Gestión y Calidad</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="540" y="199" text-anchor="middle" fill="#854F0B">Proyectos y estándares</text>
+            <line x1="540" y1="156" x2="540" y2="170" stroke="#854F0B" stroke-width="0.8"/>
+            <rect x="447" y="222" width="184" height="112" rx="8" fill="#f8fafb" stroke="#dce3ed" stroke-width="0.5"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="465" y="242" fill="#5a6a80">· 3.1 Gestión y planificación</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="473" y="256" fill="#5a6a80">de proyectos de software</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="465" y="274" fill="#5a6a80">· 3.2 Gestión de la calidad</text>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="465" y="292" fill="#5a6a80">· 3.3 Ingeniería de sistemas</text>
+            <line x1="540" y1="206" x2="540" y2="222" stroke="#dce3ed" stroke-width="0.5" stroke-dasharray="3 3"/>
+
+            <!-- Flechas entre unidades -->
+            <line x1="170" y1="130" x2="310" y2="130" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow-hr)"/>
+            <line x1="370" y1="130" x2="510" y2="130" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow-hr)"/>
+
+            <!-- Inicio y Fin -->
+            <rect x="22" y="118" width="44" height="24" rx="12" fill="#f8fafb" stroke="#dce3ed" stroke-width="0.8"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="44" y="130" text-anchor="middle" dominant-baseline="central" fill="#5a6a80">Inicio</text>
+            <line x1="66" y1="130" x2="110" y2="130" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow-hr)"/>
+            <rect x="614" y="118" width="44" height="24" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="636" y="130" text-anchor="middle" dominant-baseline="central" fill="#085041">Fin</text>
+            <line x1="570" y1="130" x2="612" y2="130" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow-hr)"/>
+
+            <!-- Nota pie -->
+            <text font-family="'Source Sans 3',sans-serif" font-size="9" x="340" y="395" text-anchor="middle" fill="#5a6a80">SIS021 · Escuela Profesional de Ingeniería de Sistemas · UAC · 2026-II</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════ UNIDAD I ══════════════════════════════ -->
+    <div id="section-unidad1" style="display:none;">
+      <div class="breadcrumb">
+        <a href="#" onclick="showSection('generalidades')">Inicio</a> › Unidad I
+      </div>
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="var(--uac-accent)"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Unidad I – Introducción a la Ingeniería del Software
+      </div>
+      <div class="unit-block">
+        <div class="unit-header open" onclick="toggleUnit(this)">
+          <div class="unit-number">I</div>
+          <div class="unit-title-text">
+            <div class="unit-label">Unidad de Aprendizaje</div>
+            <div class="unit-name">Introducción a la Ingeniería del Software</div>
+          </div>
+          <svg class="unit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="unit-body open">
+
+          <div class="unit-intro">
+            En esta unidad explorarás los fundamentos de la ingeniería de software: su naturaleza, los procesos y metodologías de desarrollo, y los principios del desarrollo ágil. Comprenderás el contexto profesional y ético en el que se desarrolla el software moderno.
+          </div>
+
+          <!-- TEMA 1.1 -->
+          <div class="resource-group">
+            <div class="resource-group-title">1.1 · Introducción a la Ingeniería del Software</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/12Z_JvQ0SPJlH6j5kF8sU3DpAmRQ529FA/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 1.1.2 – Ética profesional y estándares en ingeniería de software</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 1-2</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 1.2 -->
+          <div class="resource-group">
+            <div class="resource-group-title">1.2 · Procesos de Software</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/11zUEC5GECtHlWViJF5S0dTdJWFasrffd/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 1.2.1 – Modelos de proceso</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 3-4</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 1.3 -->
+          <div class="resource-group">
+            <div class="resource-group-title">1.3 · Desarrollo Ágil de Software</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1PitDJwKFjAMAxJ3TC1RxPwY8bOeedh2W/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 1.3 – Desarrollo ágil de software</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 5</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/1Tb4sATRjBEPXcG1UBzYDQSz3sTx-5mF8/view?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Áreas de conocimiento SWEBOK 2024</div>
+                <div class="resource-meta">Imagen de referencia · Material complementario</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- ACTIVIDADES -->
+          <div class="resource-group">
+            <div class="resource-group-title">Actividades de Aprendizaje</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1UvHg9yipwoNIOwWYCIYxyO1gHEh7-b3r/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 1.1 – Caracterización de un producto de software</div>
+                <div class="resource-meta">Instrucciones disponibles · Entrega: 14 de agosto de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1Tcbfq1aIG7-ZGOkWyVWzXTk5H_p41tQg/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 1.2 – Proceso de desarrollo del sistema</div>
+                <div class="resource-meta">Instrucciones disponibles · Entrega: 28 de agosto de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1vrHGG5T4_gQNuDN8UCtO8TY-Zv_nBl7Z/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 1.3 – Backlog de producto</div>
+                <div class="resource-meta">Instrucciones disponibles · Entrega: 04 de septiembre de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- VIDEO COMPLEMENTARIO -->
+          <div class="resource-group">
+            <div class="resource-group-title">Video de Información Complementaria</div>
+            <div class="resource-item" onclick="window.open('https://www.youtube.com/watch?v=w4rG5GY9IlA','_blank')" style="cursor:pointer;">
+              <div class="resource-icon video">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="18" height="18"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Learning software engineering during the era of AI | Raymond Fu | TEDxCSTU</div>
+                <div class="resource-meta">TEDx Talks (2024) · YouTube</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+          </div>
+
+        </div><!-- /unit-body -->
+      </div><!-- /unit-block -->
+    </div><!-- /section-unidad1 -->
+
+    <!-- ══════════════════════════════ UNIDAD II ══════════════════════════════ -->
+    <div id="section-unidad2" style="display:none;">
+      <div class="breadcrumb">
+        <a href="#" onclick="showSection('generalidades')">Inicio</a> › Unidad II
+      </div>
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="var(--uac-accent)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Unidad II – Análisis, Diseño y Validación de Software
+      </div>
+
+      <div class="unit-block">
+        <div class="unit-header open" onclick="toggleUnit(this)">
+          <div class="unit-number">II</div>
+          <div class="unit-title-text">
+            <div class="unit-label">Unidad de Aprendizaje</div>
+            <div class="unit-name">Análisis, Diseño y Validación de Software</div>
+          </div>
+          <svg class="unit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="unit-body open">
+
+          <!-- INTRODUCCIÓN -->
+          <div class="unit-intro">
+            En esta unidad desarrollarás competencias para analizar, modelar y diseñar sistemas de software de calidad, abordando la ingeniería de requisitos, el modelado de sistemas con notaciones estándar y el diseño arquitectónico, todo ello sustentado en literatura académica actualizada.
+          </div>
+
+          <!-- TEMA 2.1 -->
+          <div class="resource-group">
+            <div class="resource-group-title">2.1 · Ingeniería de Requisitos</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1KeD0XHemIT3R9QEL_SFJiM5U6qfUBrzE/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 2.1 – Elicitación y análisis de requisitos</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 7-8</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/1jmZt5hQuT8n7yyzgjgegyGONCb50RFWd/view?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Lectura: Merino Sánchez (2025) – Ingeniería de Requisitos en Entornos Ágiles y Tradicionales</div>
+                <div class="resource-meta">ASCE Magazine · ISSN 3073-1178 · Vol. 4, N° 3</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/1ZhViVUUUIBGiDuY9v75ROH4TzDPF4s6R/view?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Guía complementaria – HU02: Prototipado en Ingeniería de Requisitos con Figma</div>
+                <div class="resource-meta">Recurso de información complementaria · Unidad II</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1UfMTwhz2_sTyvW7lO5Ws-qrSJ-mynNZV/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.1 – Instrucciones</div>
+                <div class="resource-meta">Elabora un documento de especificación de requisitos del sistema propuesto · Entrega: 02 de octubre de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/1WzLQRrkbE-oLNLfU40S3dS0PJBgLmZev/view?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.1 – Ejemplo práctico</div>
+                <div class="resource-meta">Archivo de referencia</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://uandina-lornel.atlassian.net/jira/software/projects/IDS/boards/2/backlog','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.1 – Jira · Proyecto SASE</div>
+                <div class="resource-meta">Tablero de backlog del proyecto en Jira</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 2.2 -->
+          <div class="resource-group">
+            <div class="resource-group-title">2.2 · Modelado de Sistemas</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1woQ-1meNlkhiCTcnjxQhbPF5Hcs6YPrF/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 2.2 – Modelado Estructural y Comportamiento</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 9-10</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/1RtG_PlRdj9xSKqUOEUe3rR9EocyqtUuW/view?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Archivo fuente para modelos en UML (.drawio)</div>
+                <div class="resource-meta">Recurso de apoyo para la actividad 2.2</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/spreadsheets/d/1bPfH3mmJJjOFOTsJelANmX52tB8hbaEy/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Normas Técnicas Peruanas vinculadas al tema</div>
+                <div class="resource-meta">Recurso de referencia normativa · Google Sheets</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/15_oGTw6drFs70_xAxijggavQ_1CI0u-i/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.2 – Instrucciones</div>
+                <div class="resource-meta">Elabora modelos de contexto, interacción, estructura y comportamiento · Entrega: 16 de octubre de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://drive.google.com/file/d/1EHzB3a13DAysbWijhtfP-4mCJBxiVUAr/view?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.2 – Ejemplo práctico</div>
+                <div class="resource-meta">Archivo de referencia</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 2.3 -->
+          <div class="resource-group">
+            <div class="resource-group-title">2.3 · Diseño Arquitectónico</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/140aWYID56EHhWAbXSvr4C2vIGPoi1QnO/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 2.3 – Diseño arquitectónico</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 11</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1DGh2QjFxocBS07qNKTpOY_MRmdFEMW3S/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.3 – Instrucciones</div>
+                <div class="resource-meta">Elabora el diseño arquitectónico del sistema propuesto · Entrega: 23 de octubre de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 2.4 Investigación Formativa -->
+          <div class="resource-group">
+            <div class="resource-group-title">2.4 · Investigación Formativa</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/18LOQRzfMZwUkZ4MMCRDv22eLx2y13N3o/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 2.4 – Instrucciones: Repositorio Bibliográfico</div>
+                <div class="resource-meta">Elabora un repositorio bibliográfico a partir de literatura académica en fuentes reconocidas · Cierre: 30 de octubre de 2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- VIDEO COMPLEMENTARIO -->
+          <div class="resource-group">
+            <div class="resource-group-title">Video de Información Complementaria</div>
+            <div class="resource-item" onclick="window.open('https://www.youtube.com/watch?v=XDNXLdwq114','_blank')" style="cursor:pointer;">
+              <div class="resource-icon video">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="18" height="18"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Why AI WON'T Replace Software Engineering...</div>
+                <div class="resource-meta">YouTube · Video de información complementaria</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+          </div>
+
+        </div><!-- /unit-body -->
+      </div><!-- /unit-block -->
+    </div><!-- /section-unidad2 -->
+
+    <!-- ══════════════════════════════ UNIDAD III ══════════════════════════════ -->
+    <div id="section-unidad3" style="display:none;">
+      <div class="breadcrumb">
+        <a href="#" onclick="showSection('generalidades')">Inicio</a> › Unidad III
+      </div>
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="var(--uac-accent)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Unidad III – Gestión y Calidad del Software
+      </div>
+      <div class="unit-block">
+        <div class="unit-header open" onclick="toggleUnit(this)">
+          <div class="unit-number">III</div>
+          <div class="unit-title-text">
+            <div class="unit-label">Unidad de Aprendizaje</div>
+            <div class="unit-name">Gestión y Calidad del Software</div>
+          </div>
+          <svg class="unit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="unit-body open">
+
+          <div class="unit-intro">
+            En esta unidad abordarás la gestión y calidad del software desde una perspectiva integral: planificación, estimación, estándares de calidad, pruebas, mantenimiento y la dimensión sociotécnica de los sistemas. Consolidarás tu formación como ingeniero de software con visión profesional y ética.
+          </div>
+
+          <!-- TEMA 3.1 -->
+          <div class="resource-group">
+            <div class="resource-group-title">3.1 · Gestión de Proyectos de Software</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1jFkZ1X1CqVhRldoBwoI98-bdhu5NEt9j/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 3.1 – Gestión de riesgos, organización del equipo, estimación de esfuerzo y planificación del cronograma</div>
+                <div class="resource-meta">Material Educativo Digital · Semanas 13-14</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://planningpokeronline.com/','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Planning Poker Online – Herramienta de estimación</div>
+                <div class="resource-meta">https://planningpokeronline.com/</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1wXu6Z8SJR6RBZeWkhMpQOq-CZMDj3tl1/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.1 – Instrucciones: Plan de Proyecto</div>
+                <div class="resource-meta">Instrucciones disponibles</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1eWK8sLExdl3D7SGSJD7orIP9VbiLWzEd/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.1 – Ejemplo práctico</div>
+                <div class="resource-meta">Archivo de referencia</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://github.com/lornelrivas/SASE-SIS021-2026','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 1 – Repositorio GitHub del proyecto SASE</div>
+                <div class="resource-meta">https://github.com/lornelrivas/SASE-SIS021-2026</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 3.2 -->
+          <div class="resource-group">
+            <div class="resource-group-title">3.2 · Calidad del Software</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/10Jr5hqv0M_nAqj8WJrFMwPP3RfBFLwD8/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 3.2.1 – Calidad del software basada en estándares</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 15</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1G1uIKAsbtudimNcCg4pXTgzB2qGolPEJ/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 3.2.2 – Aseguramiento de calidad y pruebas de validación</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 15</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1mFkvwUmAiQ8napfuI1ZxLuoZCNlNOmeM/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 3.2.3 – Mantenimiento y Evolución del Software</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 16</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1m68NaaQXXAPrRRATxj9RrCD1jMMfZC6D/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.2 – Instrucciones: Plan de Calidad</div>
+                <div class="resource-meta">Instrucciones disponibles</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1ZyuwLWe6XxgB5IESg5_M4KwxZtSXN45A/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.2 – Anexo: Plantilla de Casos de Prueba</div>
+                <div class="resource-meta">Documento de apoyo</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1lyUF_7bUGhACyxcoqibqc3ZlJReAvuAE/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.2 – Ejemplo práctico</div>
+                <div class="resource-meta">Archivo de referencia</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/17yGo8aC2o974PDHEyoMoiXPqtFi3Smjr/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.2 – Anexo Casos de Prueba: Ejemplo</div>
+                <div class="resource-meta">Archivo de referencia</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+          </div>
+
+          <!-- TEMA 3.3 -->
+          <div class="resource-group">
+            <div class="resource-group-title">3.3 · Ingeniería de Sistemas</div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1_oQFEbLbnHw6ee1ivrdGkFRWMVFrOTl6/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 3.3.1 – Sistemas Sociotécnicos</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 16</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/presentation/d/1ofqTAB-p1ZZw-VmxzKN7wzLZwOKr2UoM/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon ppt">
+                <svg viewBox="0 0 24 24" fill="#d97706" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h5a2 2 0 010 4H8V8z" fill="white"/><line x1="8" y1="16" x2="16" y2="16" stroke="white" stroke-width="1.5"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">PPT 3.3.2 – Ciclo de Vida e Integración</div>
+                <div class="resource-meta">Material Educativo Digital · Semana 17</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/1VraSVeNnE68WqXCrvEFAhsGG0btS5FFK/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.3 – Instrucciones: Análisis del Sistema</div>
+                <div class="resource-meta">Instrucciones disponibles</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://docs.google.com/document/d/13bTUDCmtkGHd-i14f35LM14-WguGjkrf/edit?usp=sharing','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.3 – Ejemplo práctico</div>
+                <div class="resource-meta">Archivo de referencia</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+            <div class="resource-item">
+              <div class="resource-icon task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Actividad 3.4 – Instrucciones: Responsabilidad Social</div>
+                <div class="resource-meta">Instrucciones próximamente disponibles</div>
+              </div>
+              <span class="resource-badge badge-soon">Próximamente</span>
+            </div>
+          </div>
+
+          <!-- VIDEO COMPLEMENTARIO -->
+          <div class="resource-group">
+            <div class="resource-group-title">Video de Información Complementaria</div>
+            <div class="resource-item" onclick="window.open('https://www.youtube.com/watch?v=emidrJeUTaM&t=22s','_blank')" style="cursor:pointer;">
+              <div class="resource-icon video">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="18" height="18"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Jira Tutorial for Beginners | Atlassian Answered</div>
+                <div class="resource-meta">YouTube · Video de información complementaria</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://ideas.ted.com/the-3-things-that-great-teams-have-in-common/','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">The 3 things that great teams have in common</div>
+                <div class="resource-meta">TED Ideas · Artículo de información complementaria</div>
+              </div>
+              <span class="resource-badge badge-available">Leer</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function showSection(id) {
+    ['generalidades','unidad1','unidad2','unidad3'].forEach(s => {
+      document.getElementById('section-' + s).style.display = 'none';
+    });
+    document.getElementById('section-' + id).style.display = 'block';
+
+    document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+    const map = {generalidades:0, unidad1:1, unidad2:2, unidad3:3};
+    document.querySelectorAll('.sidebar-item')[map[id]].classList.add('active');
+  }
+
+  function toggleCard(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  }
+
+  function toggleUnit(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
