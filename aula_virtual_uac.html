@@ -362,8 +362,8 @@
         Chat de Consultas
       </a>
       <a class="sidebar-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Calificaciones
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Recursos de Biblioteca
       </a>
     </div>
   </nav>
@@ -572,6 +572,37 @@
           </svg>
         </div>
       </div>
+      <!-- Recursos de Biblioteca -->
+      <div class="card">
+        <div class="card-header open" onclick="toggleCard(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          <span class="card-header-title">Recursos de Biblioteca</span>
+          <svg class="card-header-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body open">
+          <div class="resource-item" onclick="window.open('https://biblioteca.uandina.edu.pe/bvirtual.html','_blank')" style="cursor:pointer;">
+            <div class="resource-icon link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            </div>
+            <div class="resource-text">
+              <div class="resource-name">Biblioteca Virtual UAC</div>
+              <div class="resource-meta">https://biblioteca.uandina.edu.pe/bvirtual.html</div>
+            </div>
+            <span class="resource-badge badge-available">Disponible</span>
+          </div>
+          <div class="resource-item" onclick="window.open('https://repositorio.uandina.edu.pe/','_blank')" style="cursor:pointer;">
+            <div class="resource-icon link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            </div>
+            <div class="resource-text">
+              <div class="resource-name">Repositorio de Tesis UAC</div>
+              <div class="resource-meta">https://repositorio.uandina.edu.pe/</div>
+            </div>
+            <span class="resource-badge badge-available">Disponible</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══════════════════════════════ UNIDAD I ══════════════════════════════ -->
@@ -890,6 +921,73 @@
                 <div class="resource-meta">Elabora un repositorio bibliográfico a partir de literatura académica en fuentes reconocidas · Cierre: 30 de octubre de 2026</div>
               </div>
               <span class="resource-badge badge-available">Disponible</span>
+            </div>
+
+            <div class="resource-item" onclick="window.open('https://www.zotero.org/','_blank')" style="cursor:pointer;">
+              <div class="resource-icon link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="18" height="18"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Gestor de referencias: Zotero</div>
+                <div class="resource-meta">https://www.zotero.org/</div>
+              </div>
+              <span class="resource-badge badge-available">Disponible</span>
+            </div>
+
+            <div style="margin:14px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--uac-accent);">Ejemplo de publicaciones - EPIS relativas a la asignatura</div>
+
+            <div class="resource-item" onclick="window.open('https://doi.org/10.1007/978-3-030-40690-5_46','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Software Engineering Issues for the Development of mHealth Apps</div>
+                <div class="resource-meta">Rivas, Ganvini & Mendoza · Springer ICITS 2020</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://doi.org/10.23919/cisti49556.2020.9140914','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Factors for the Development of mHealth Apps: Process Perspective</div>
+                <div class="resource-meta">CISTI 2020 · Acceso vía DOI</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://doi.org/10.31577/cai_2022_1_309','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Proposal of Critical Success Factors for eHealth Services Deployment</div>
+                <div class="resource-meta">Mendoza, Rivas & Ganvini · Computing and Informatics, Vol. 41, 2022</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+
+            <div style="margin:14px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--uac-accent);">Ejemplo de tesis - EPIS sobre buenas prácticas en Ingeniería de Software</div>
+
+            <div class="resource-item" onclick="window.open('https://repositorio.uandina.edu.pe/item/bcf270a9-97ea-4fb6-ae55-bb89cd60ae57','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Sistema para la gestión de planes de mejora en la EPIS de la Universidad Andina del Cusco</div>
+                <div class="resource-meta">Tesis de pregrado · Repositorio UAC</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
+            </div>
+            <div class="resource-item" onclick="window.open('https://repositorio.uandina.edu.pe/item/47aac739-dab8-4a78-b9cf-721242f33dd5','_blank')" style="cursor:pointer;">
+              <div class="resource-icon pdf">
+                <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+              </div>
+              <div class="resource-text">
+                <div class="resource-name">Sistema de información para apoyar la primera experiencia de inserción laboral de los estudiantes de la EPIS</div>
+                <div class="resource-meta">Tesis de pregrado · Repositorio UAC</div>
+              </div>
+              <span class="resource-badge badge-available">Ver</span>
             </div>
           </div>
 
